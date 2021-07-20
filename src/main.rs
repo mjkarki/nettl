@@ -38,26 +38,31 @@ fn get_netstat() -> Vec::<(String, String, String, String, String)> {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let mut args: Vec<String> = env::args().collect();
     let mut tcp = false;
     let mut udp = false;
     let mut listening = false;
+    let mut help = false;
 
     if args.len() == 1 {
-        print_help();
-        return;
+        help = true;
     }
 
+    // Remove executable name from the argument list
+    args.remove(0);
+
     for arg in args {
-        if arg == "-t" {
-            tcp = true;
+        match arg.as_str() {
+            "-t" => tcp = true,
+            "-u" => udp = true,
+            "-l" => listening = true,
+            _    => help = true,
         }
-        else if arg == "-u" {
-            udp = true;
-        }
-        else if arg == "-l" {
-            listening = true;
-        }
+    }
+
+    if help == true {
+        print_help();
+        return
     }
 
     println!("Netstat meets Tasklist\n");
